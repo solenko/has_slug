@@ -2,6 +2,10 @@ module HasSlug
   module Base
     extend ActiveSupport::Concern
 
+    included do
+      class_attribute :slug_config
+    end
+
 
     def slug
       @slug ||= slug_obj.try(:slug)
@@ -60,25 +64,19 @@ module HasSlug
     end
 
     module ClassMethods
+
       def has_slug(opts = {}, &block)
         opts.symbolize_keys!.update(:model_class => self)
         raise ArgumentError.new("Pls, specify field (:on option).") unless opts.has_key? :on
+        self.slug_config = Config.new(opts)
         yield slug_config if block_given?
-        self.slug_config = opts
 
         validate :validate_slug
         before_validation :generate_slug, :if => :slug_renew_required?
         after_save :update_slug
 
         has_one :slug_obj, :as => :source_object, :class_name => 'HasSlug::Slug'
-      end
-
-      def slug_config
-        @@slug_config ||= Config.new
-      end
-
-      def slug_config=(opts)
-        slug_config.set(opts)
+        self.slug_config
       end
 
       def slug_field_name
@@ -88,7 +86,6 @@ module HasSlug
       def find_by_slug(slug)
         joins(:slug_obj).where(:slug_obj => {:slug => slug}).first
       end
-
     end
 
   end

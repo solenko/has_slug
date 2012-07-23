@@ -5,8 +5,9 @@ module HasSlug
     attr_accessor :enable_history
     attr_accessor :model_class
 
-    def initialize()
+    def initialize(config = {})
       set(defaults)
+      set(config) if config.any?
     end
 
     def defaults

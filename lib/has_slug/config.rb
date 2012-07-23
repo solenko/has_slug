@@ -5,16 +5,16 @@ module HasSlug
     attr_accessor :enable_history
     attr_accessor :model_class
 
-    def initialize(config = {})
-      set(defaults)
-      set(config) if config.any?
-    end
-
-    def defaults
+    def self.defaults
       {
           :scope => :global,
           :enable_history => true
       }
+    end
+
+    def initialize(config = {})
+      set(self.class.defaults)
+      set(config) if config.any?
     end
 
     def set(opts = {})

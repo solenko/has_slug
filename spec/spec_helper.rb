@@ -6,6 +6,7 @@ require 'rspec/mocks'
 RSpec::Mocks::setup(Object)
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
+require "has_slug/migration"
 
 def setup_db
   ActiveRecord::Schema.define(:version => 1) do
@@ -18,6 +19,8 @@ def setup_db
       t.string :name
       t.integer :weight
     end
+
+    CreateHasSlugTables.up
   end
 end
 
@@ -55,5 +58,14 @@ class Category < ActiveRecord::Base
 
   def children
     articles
+  end
+end
+
+RSpec.configure do |config|
+  config.around do |example|
+    ActiveRecord::Base.transaction do
+      example.run
+      raise ActiveRecord::Rollback
+    end
   end
 end

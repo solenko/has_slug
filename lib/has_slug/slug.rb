@@ -1,7 +1,5 @@
 module HasSlug
   class Slug < ActiveRecord::Base
-    attr_accessible :slug
-
     belongs_to :source_object, :polymorphic => true
 
     after_update :keep_history
@@ -12,7 +10,7 @@ module HasSlug
         return unless slug_changed?
         source, destination = changes['slug']
         History.create(:source => source, :destination => destination)
-        History.update_all({:destination => destination}, {:destination => source})
+        History.where({:destination => destination}).update_all({:destination => source})
       end
   end
 end

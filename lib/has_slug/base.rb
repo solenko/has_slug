@@ -20,11 +20,13 @@ module HasSlug
       changed_attributes.include? :slug
     end
 
+    def regenerate_slug!
+      generate_slug
+      update_slug
+    end
+
     def generate_slug
-      prefix = if respond_to?(:parent) && parent
-                 self.parent.slug
-               end
-      self.slug = [prefix, I18n.transliterate(self.send(slug_field_name)).parameterize].compact.join('/')
+      self.slug = HasSlug::Generator.new(self).generate
       ensure_slug_uniqueness
     end
 
@@ -43,6 +45,14 @@ module HasSlug
       self.class.slug_field_name
     end
 
+    def parent_field_name
+      self.class.parent_field_name
+    end
+
+    def children_field_names
+      self.class.children_field_names
+    end
+
     def slug_renew_required?
       send(slug_field_name).present? && (slug.blank? || !slug_changed? && send("#{slug_field_name}_changed?"))
     end
@@ -52,9 +62,17 @@ module HasSlug
     end
 
     def update_slug
-      self.slug_obj ||= HasSlug::Slug.new
+      build_slug_obj unless self.slug_obj
       self.slug_obj.slug = self.slug
-      self.slug_obj.save
+      transaction do
+        self.slug_obj.save
+        children_field_names.each do |field_name|
+          Array(send(field_name)).each do |record|
+            record.regenerate_slug!
+          end
+        end
+      end
+
     end
 
     def slug_validation_scope
@@ -78,6 +96,8 @@ module HasSlug
         has_one :slug_obj, :as => :source_object, :class_name => 'HasSlug::Slug'
         self.slug_config
       end
+
+      delegate :parent_field_name, :children_field_names, to: :slug_config
 
       def slug_field_name
         slug_config.on

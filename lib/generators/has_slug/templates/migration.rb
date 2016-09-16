@@ -17,8 +17,6 @@ class CreateHasSlugTables < ActiveRecord::Migration
   def self.down
     drop_table :slugs
     drop_table :slug_history
-
-
   end
 
 end

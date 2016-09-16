@@ -4,11 +4,15 @@ module HasSlug
     attr_reader :scope
     attr_accessor :enable_history
     attr_accessor :model_class
+    attr_accessor :parent_field_name
+    attr_accessor :children_field_names
 
     def self.defaults
       {
-          :scope => :global,
-          :enable_history => true
+          scope: :global,
+          enable_history: true,
+          parent_field_name: :parent,
+          children_field_names: []
       }
     end
 
@@ -43,7 +47,7 @@ module HasSlug
                      :base_class
                     Slug.joins("#{model_class.table_name} ON #{model_class.table_name}.#{model_class.primary_key} = #{Slug.table_name}.source_object_id AND #{model_class.inheritance_column} = #{Slug.table_name}.source_object_type")
                    else
-                    Slug.scoped
+                    Slug.all
                  end
       end
   end

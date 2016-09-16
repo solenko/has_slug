@@ -1,7 +1,7 @@
 # encoding: utf-8
 $:.push File.expand_path("../lib", __FILE__)
 
-require "has_slug"
+require "has_slug/version"
 
 Gem::Specification.new do |s|
   s.name              = "has_slug"
@@ -10,15 +10,12 @@ Gem::Specification.new do |s|
   s.email             = ["anton.petrunich@gmail.com"]
   s.homepage          = "http://github.com/solenko/has_slug"
   s.summary           = "Add slug functionality for your ActiveRecord models."
-  s.files             = `git ls-files`.split("\n")
-  s.test_files        = `git ls-files -- {spec}/*`.split("\n")
+  s.files             = Dir.glob("{lib}/**/*")
+  s.test_files        = Dir.glob("{spec}/**/*")
   s.require_paths     = ["lib"]
 
-  s.add_dependency "activerecord", "~> 3.2.0"
-  s.add_dependency "railties", "~> 3.2.0"
+  s.add_dependency "activerecord", ">= 4.0.0"
+  s.add_dependency "railties", ">= 4.0.0"
 
-  s.add_development_dependency "railties", "~> 3.2.0"
-  s.add_development_dependency "activerecord", "~> 3.2.0"
-  s.add_development_dependency "rspec", "~> 2.11"
-  s.add_development_dependency "i18n"
+  s.add_development_dependency "rspec", ">= 3.0.0"
 end

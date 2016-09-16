@@ -3,7 +3,7 @@ require "rubygems"
 require "bundler/setup"
 require "active_record"
 require 'rspec/mocks'
-RSpec::Mocks::setup(Object)
+RSpec::Mocks::setup
 
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 require "has_slug/migration"

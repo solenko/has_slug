@@ -42,9 +42,7 @@ module HasSlug
         @scope = case scope
                    when :class
                     Slug.where(:source_object_type => model_class.name)
-                   when 
-                     
-                     :base_class
+                   when :base_class
                     Slug.joins("#{model_class.table_name} ON #{model_class.table_name}.#{model_class.primary_key} = #{Slug.table_name}.source_object_id AND #{model_class.inheritance_column} = #{Slug.table_name}.source_object_type")
                    else
                     Slug.all

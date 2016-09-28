@@ -12,6 +12,7 @@ module HasSlug
   autoload :Slug, 'has_slug/slug'
   autoload :Generator, 'has_slug/generator'
   autoload :Base, 'has_slug/base'
+  autoload :UrlRewriter, 'has_slug/url_rewriter'
 
   def self.included(model_class)
     model_class.instance_eval do

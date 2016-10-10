@@ -13,7 +13,7 @@ module HasSlug
     end
 
     def prefix
-      sluggable_parent.try(:slug) || '/'
+      sluggable_parent.try(:slug) || ''
     end
 
     def sluggable_parent

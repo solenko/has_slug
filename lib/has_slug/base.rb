@@ -77,7 +77,7 @@ module HasSlug
 
     def slug_validation_scope
       scope = self.class.slug_config.scope
-      scope.where(["id != ?", self.id]) if self.persisted?
+      scope = scope.where.not(source_object_id: id, source_object_type: self.class.name) if self.persisted?
       scope
     end
 
